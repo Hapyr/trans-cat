@@ -1,0 +1,6 @@
+flask
+MechanicalSoup
+numpy
+pandas
+sklearn
+chardet

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-16">
+    <title>FlaskApp</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="/static/css/form.css">
+    <link rel="stylesheet" href="/static/css/general.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="/static/js/form.js"></script>
+
+
+    <style>
+        *{
+
+            font-family: 'Nunito', sans-serif;
+        }
+        body{
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f1f1f1;
+        }
+        #main{
+            margin: 20px auto;
+            max-width: 1000px;
+            padding: 20px;
+            background: white;
+            border-radius: 7px;
+            box-shadow: -1px -1px 43px -16px rgba(36,36,36,0.73);
+            -webkit-box-shadow: -1px -1px 43px -16px rgba(36,36,36,0.73);
+            -moz-box-shadow: -1px -1px 43px -16px rgba(36,36,36,0.73);
+        }
+        #train_all{
+            max-height: 400px;
+            overflow-y: scroll;
+            width: 100%;
+            display: block;
+        }
+        .train_row{
+            background: white;
+            display: flex;
+            
+        }
+        .train_row_header{
+            background-color: white;
+        }
+        .train_row_header .element{
+            cursor: pointer;
+            background-color: #F0D28E;
+        }
+        .element{
+            padding: 10px;
+            overflow: hidden;
+            width: 300px;
+            background-color: #f0d38e69;
+            margin: 2px;
+        }
+
+        .selected_fet{
+            background-color: #71ffbd6b !important;
+            font-weight: bolder;
+        }
+
+        .button_train{
+            background-color: rgb(0, 172, 224);
+            display: inline-block;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0px 0px 20px 0px;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
+            float: right;
+        }
+        .button_train:hover{
+            background-color: rgb(0, 135, 177);
+            color: white;
+        }
+        #warning{
+            margin: 0px;
+            padding: 0px;
+        }
+
+        
+
+        #grid-main{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        #grid-left{
+            padding: 10px;
+
+        }
+        #grid-right{
+            padding: 10px;
+        }
+
+
+
+    </style>
+
+</head>
+<body>
+
+    <div id="home">
+        <div id="home_inner">
+            <a href="/">TransCat</a>
+            <br>
+            Categorize your bank transactions automatically
+        </div>
+    </div>
+    <div id="main">
+
+        <div id="grid-main">
+
+            <div id="grid-left">
+                <h3>Create a new Model</h3>
+
+                <form method="POST" action="/upload" enctype="multipart/form-data">
+
+
+
+                    <label class="upload_label" for="file">File</label>
+                    <div class="file-upload">
+                        <div class="image-upload-wrap">
+                          <input class="file-upload-input" type='file' onchange="readURL(this);" name="file" />
+                          <div class="drag-text">
+                            <i class="fa fa-upload" style="font-size:18px"></i>&nbsp; 
+                            Drag and drop or select a file
+                          </div>
+                        </div>
+                        <div class="file-upload-content">
+                          <div class="image-title-wrap">
+                            <button type="button" onclick="removeUpload()" class="remove-image">Remove <span class="image-title">Uploaded Image</span></button>
+                          </div>
+                        </div>
+                    </div>
+
+                    <label class="upload_label" for="seperator">Seperator</label>
+                    <input class="form-elem" type="text" name="seperator" value="," >
+                    
+                    <label class="upload_label" for="ending">Line ending</label>
+                    <input class="form-elem" type="text" name="ending" value="\n" >
+
+                    <label class="upload_label" for="linestart">At witch line the CSV header starts</label>
+                    <input class="form-elem" type="number" name="linestart" value=0 >
+
+                    <input class="form-elem form-submit" type="submit" value="Upload model">
+                </form>
+            </div>
+
+            <div id="grid-right">
+                
+                <h3>Or choose a model from the list</h3>
+
+                {% for e in data %}
+                    <div class="model_elem">
+                        <div class="model_name" onclick="select_model(this)">{{ e }}</div>
+                        <div class="model_name_del" onclick="remove_model('{{ e }}')"><i class="fa fa-trash"></i></div>
+                    </div>
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        
+
+    </div>
+</body>
+<script>
+
+/**
+ * sends a request to the specified url from a form. this will change the window location.
+ * @param {string} path the path to send the post request to
+ * @param {object} params the parameters to add to the url
+ * @param {string} [method=post] the method to use on the form
+ */
+
+function post(path, params, method='post') {
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less verbose if you use one.
+    const form = document.createElement('form');
+    form.method = method;
+    form.action = path;
+
+    for (const key in params) {
+      if (params.hasOwnProperty(key)) {
+        const hiddenField = document.createElement('input');
+        hiddenField.type = 'hidden';
+        hiddenField.name = key;
+        hiddenField.value = params[key];
+
+        form.appendChild(hiddenField);
+      }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+
+function select_model(elem)
+{
+    post('/load_model', [elem.innerHTML]);
+
+}
+
+function remove_model(model_name){
+    console.log(model_name);
+    post('/remove_model', [model_name]);
+
+}
+
+</script>
+</html>

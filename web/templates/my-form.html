@@ -1,0 +1,32 @@
+<form action="/login/" method="POST">
+    <input type="text" id="username" name="username">
+    <input type="password" id="password" name="password">
+    <input type="submit">
+</form>
+
+    <input type="text" id="tan" name="tan">
+    <div onclick="tan()">TAN</div>
+
+<div onclick="login()">login</div>
+
+<script>
+    function login() {
+        var xhr = new XMLHttpRequest();
+    
+        xhr.open("POST", "/login/", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({
+            "username": "1066236108_p",
+            "password": "2FCFscs6Qlltt4yQoAIwYO"
+        }));
+    }
+    function tan() {
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("POST", "/tan/", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({
+            "tan": document.getElementById('tan').value
+        }));
+    }
+</script>

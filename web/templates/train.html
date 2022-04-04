@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FlaskApp</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/css/general.css">
+    <style>
+        *{
+
+            font-family: 'Nunito', sans-serif;
+        }
+        body{
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f1f1f1;
+        }
+        #main{
+            margin: 20px auto;
+            max-width: 1000px;
+            padding: 20px;
+            background: white;
+            border-radius: 7px;
+            box-shadow: -1px -1px 43px -16px rgba(36,36,36,0.73);
+            -webkit-box-shadow: -1px -1px 43px -16px rgba(36,36,36,0.73);
+            -moz-box-shadow: -1px -1px 43px -16px rgba(36,36,36,0.73);
+        }
+        #train_all{
+            max-height: 400px;
+            width: 100%;
+            display: block;
+            overflow: scroll;
+        }
+        .train_row{
+            background: white;
+            display: block;
+            white-space: nowrap;
+            
+        }
+        .train_row_header{
+            background-color: white;
+            display: block;
+            white-space: nowrap;
+        }
+        .train_row_header .element{
+            cursor: pointer;
+            background-color: #2ECC40;
+        }
+        .train_row_header .element:first-child{
+            border-top-left-radius: 5px;
+        }
+        .train_row_header .element:last-child{
+            border-top-right-radius: 5px;
+        }
+        .element{
+            padding: 10px;
+            overflow: hidden;
+            width: 200px;
+            background-color: #2ecc4096;
+            white-space: nowrap;
+            display: inline-block;
+            height: 20px
+        }
+
+        .selected_fet{
+            background-color: #196b22 !important;
+            font-weight: bolder;
+            color: white;
+        }
+
+        .pred_kat{
+            background-color: #c2c2c2a9;
+            width: 100%;
+            border: 1px solid rgb(199, 199, 199);
+            border-radius: 5px;
+        }
+
+        .button_add{
+            background: #FFDC00 !important;
+            color: rgb(84, 84, 84) !important;
+            margin: 30px 0px 20px 0px;
+        }
+        .button_add:hover{
+            background: #8d7a00 !important;
+            color: white !important;
+        }
+        .button_save{
+            float: right;
+            margin: 30px 0px 20px 0px;
+
+        }
+
+        .button_train{
+            background-color: #2ECC40;
+            display: inline-block;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
+        }
+        .button_train:hover{
+            background-color: #196b22;
+            color: white;
+        }
+
+
+        #cat_name{
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid rgb(34, 34, 34);
+        }
+
+
+        #grid-main{
+        }
+        #grid-left{
+            padding: 10px;
+
+        }
+        #grid-right{
+            padding: 10px;
+        }
+
+        #grid-model{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .grid-elem{
+            font-size: 18px;
+            background: #2ECC40;
+            text-align: center;
+            margin: 5px;
+            padding: 5px;
+            border-radius: 5px;
+
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div id="home">
+        <div id="home_inner">
+            <a href="/">TransCat</a>
+            <br>
+            Categorize your bank transactions automatically
+        </div>
+    </div>
+    <div id="main">
+
+        <h2>TransCat data prediction</h2>
+
+        <hr>
+
+        <div id="grid-main">
+
+            <div id="grid-right">
+
+                <div id="grid-model">
+
+                    <div class="grid-elem"><b>Selected model</b><br>{{ data['train_model_name'] }}</div>
+                    <div class="grid-elem"><b>Data to predict</b><br>{{ data['predict_model_name'] }}</div>
+
+                </div>
+
+        
+            </div>
+
+        
+            <div id="grid-left">
+
+                <h3>Prediction: Take a look to the 'Kategorie' column</h3>
+
+                <div id="train_all">
+
+                {% for d in data['data'] %}
+                    {% set outer_loop = loop %}
+                    {% if d == data['data'][0] %}
+                    <div class="train_row train_row_header">
+                        {% for d in data['data'][0] %}
+                            <div class="element" onclick="select_feture(this, '{{ d }}')">{{ d }}</div>
+                        {% endfor %}
+                        <div class="element">Kategorie</div>
+
+                    </div>
+                    {% else %}
+                    {% endif %}
+                    <div class="train_row">
+                        {% for k in d %}
+                            <div class="element">{{ d[k] }}</div>
+                        {% endfor %}
+                        <div class="element">    
+                            <select name="pred_kat" class="pred_kat" id="pred_kat_{{ outer_loop.index0 }}">
+                                {% for dd in data['lable_predict_single'] %}
+                                <option value="{{ dd }}" {% if dd == data['lable_predict'][outer_loop.index0] %} selected {% endif %} >{{ dd }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                </div>
+
+
+                <input type="text" id="cat_name" name="cat_name" placeholder="categorie name">
+                <div class="button_train button_add", onclick="add_cat()">Add new Categorie</div>
+                <div class="button_train button_save" onclick="save_data()">Save model and download CSV</div>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</body>
+<script>
+
+function post(path, params, method='post') {
+
+// The rest of this code assumes you are not using a library.
+// It can be made less verbose if you use one.
+const form = document.createElement('form');
+form.method = method;
+form.action = path;
+
+for (const key in params) {
+  if (params.hasOwnProperty(key)) {
+    const hiddenField = document.createElement('input');
+    hiddenField.type = 'hidden';
+    hiddenField.name = key;
+    hiddenField.value = params[key];
+
+    form.appendChild(hiddenField);
+  }
+}
+
+document.body.appendChild(form);
+form.submit();
+}
+
+
+    function add_cat(){
+        var cat_name = document.getElementById("cat_name").value
+
+        var slides = document.getElementsByClassName("pred_kat");
+        for (var i = 0; i < slides.length; i++) {
+            var opt = document.createElement('option');
+            opt.value = cat_name;
+            opt.innerHTML = cat_name;
+            slides.item(i).appendChild(opt)
+        }
+
+    }
+
+    function save_data(){
+        
+        var cat_liste = [
+            document.getElementById("train_model").innerHTML,
+            document.getElementById("predict_model").innerHTML
+        ]
+
+        var slides = document.getElementsByClassName("pred_kat");
+        for (var i = 0; i < slides.length; i++) {
+             cat_liste.push( slides.item(i).value );
+        }
+
+        post('/save', cat_liste);
+
+    }
+</script>
+</html>

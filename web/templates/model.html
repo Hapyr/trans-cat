@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-16">
+    <title>FlaskApp</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="/static/css/general.css">
+    <link rel="stylesheet" href="/static/css/form.css">
+    <script src="/static/js/form.js"></script>
+
+    <style>
+        *{
+
+            font-family: 'Nunito', sans-serif;
+        }
+        body{
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f1f1f1;
+        }
+        #main{
+            margin: 20px auto;
+            max-width: 1000px;
+            padding: 20px;
+            background: white;
+            border-radius: 7px;
+            box-shadow: -1px -1px 43px -16px rgba(36,36,36,0.73);
+            -webkit-box-shadow: -1px -1px 43px -16px rgba(36,36,36,0.73);
+            -moz-box-shadow: -1px -1px 43px -16px rgba(36,36,36,0.73);
+        }
+        #train_all{
+            max-height: 400px;
+            width: 100%;
+            display: block;
+            overflow: scroll;
+        }
+        .train_row{
+            background: white;
+            display: block;
+            white-space: nowrap;
+            
+        }
+        .train_row_header{
+            background-color: white;
+            display: block;
+            white-space: nowrap;
+        }
+        .train_row_header .element{
+            cursor: pointer;
+            background-color: #2ECC40;
+        }
+        .train_row_header .element:first-child{
+            border-top-left-radius: 5px;
+        }
+        .train_row_header .element:last-child{
+            border-top-right-radius: 5px;
+        }
+        .element{
+            padding: 10px;
+            overflow: hidden;
+            width: 200px;
+            background-color: #2ecc4096;
+            white-space: nowrap;
+            display: inline-block;
+            height: 20px
+        }
+
+        .selected_fet{
+            background-color: #196b22 !important;
+            font-weight: bolder;
+            color: white;
+        }
+
+        .button_train{
+            background-color: rgb(0, 172, 224);
+            display: inline-block;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0px 0px 20px 0px;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
+            float: left;
+        }
+        .button_train:hover{
+            background-color: rgb(0, 135, 177);
+            color: white;
+        }
+        #warning{
+            margin: 20px 0px 0px 0px;
+            padding: 10px;
+            color: #FF4136;
+        }
+
+
+        #grid-main{
+        }
+        #grid-left{
+            padding: 10px;
+
+        }
+        #grid-right{
+            padding: 10px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div id="home">
+        <div id="home_inner">
+            <a href="/">TransCat</a>
+            <br>
+            Categorize your bank transactions automatically
+        </div>
+    </div>
+    <div id="main">
+
+        <h2>Model overview</h2>
+
+        <hr>
+
+        <div id="grid-main">
+
+            <div id="grid-right">
+                <h3>Model data</h3>
+                <h4>Select the column header on witch you want to perform the classification</h4>
+
+                <div id="train_all">
+
+                {% for d in data['data'] %}
+                    {% if loop.index0 == 0 %}
+                    <div class="train_row train_row_header">
+                        {% for p in data['data'][0] %}
+                            <div class="element" onclick="select_feture(this, '{{ p }}')">{{ p }}</div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="train_row">
+                        {% for k in d %}
+                            <div class="element">{{ d[k] }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+
+                </div>
+            </div>
+
+
+            <div id="grid-left">
+                <h3>Select the data for prediction</h3>
+
+                <form method="POST" action="/upload" id="train_form" enctype="multipart/form-data">
+
+                    <label class="upload_label" for="form_file">File</label>
+                    <div class="file-upload">
+                        <div class="image-upload-wrap">
+                          <input class="file-upload-input" type='file' onchange="readURL(this);" name="form_file" />
+                          <div class="drag-text">
+                            <i class="fa fa-upload" style="font-size:18px"></i>&nbsp; 
+                            Drag and drop or select a file
+                          </div>
+                        </div>
+                        <div class="file-upload-content">
+                          <div class="image-title-wrap">
+                            <button type="button" onclick="removeUpload()" class="remove-image">Remove <span class="image-title">Uploaded Image</span></button>
+                          </div>
+                        </div>
+                    </div>
+
+                    <label class="upload_label" for="form_seperator">Seperator</label>
+                    <input class="form-elem" type="text" name="form_seperator" value="," >
+                    
+                    <label class="upload_label" for="form_ending">Line ending</label>
+                    <input class="form-elem" type="text" name="form_ending" value="\n" >
+
+                    <label class="upload_label" for="form_line_start">At witch line the CSV header starts</label>
+                    <input class="form-elem" type="number" name="form_line_start" value=0 >
+
+                    <label class="upload_label" for="form_model_name">Your selected model</label>
+                    <input class="form-elem" type="text" name="form_model_name" value="{{ data['model_name'] }}" readonly>
+
+                </form>
+
+                <h3 id="warning"></h3>
+                <div class="form-elem form-submit", onclick="train()">Train your Classifier</div>
+
+            </div>
+        </div>
+        
+    </div>
+</body>
+<script>
+
+/**
+ * sends a request to the specified url from a form. this will change the window location.
+ * @param {string} path the path to send the post request to
+ * @param {object} params the parameters to add to the url
+ * @param {string} [method=post] the method to use on the form
+ */
+
+function post(path, params, method='post') {
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less verbose if you use one.
+    var form = document.getElementById('train_form');
+    form.method = method;
+    form.action = path;
+
+    for (const key in params) {
+      if (params.hasOwnProperty(key)) {
+        const hiddenField = document.createElement('input');
+        hiddenField.type = 'hidden';
+        hiddenField.name = key;
+        hiddenField.value = params[key];
+
+        form.appendChild(hiddenField);
+      }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+
+    var feture_list = []
+
+    function train() {
+        
+        if(feture_list.length <= 0){
+            document.getElementById("warning").innerHTML = "Please select at least one column header!"
+        }else{
+            post('/train', feture_list);
+        }
+
+    }
+
+    function select_feture(elem, name)
+    {
+        var index = feture_list.indexOf(name);
+        if (index !== -1) {
+            feture_list.splice(index, 1);
+            elem.classList.remove("selected_fet");
+        }else{
+            feture_list.push(name);
+            elem.classList.add("selected_fet");
+        }
+        console.log(feture_list);
+    }
+</script>
+</html>

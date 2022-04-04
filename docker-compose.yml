@@ -1,0 +1,12 @@
+version: '3.5'
+
+services:
+  web:
+    build: .
+    ports:
+      - "1234:5000"
+    volumes:
+      - ./web:/code
+    environment:
+      - PYTHONUNBUFFERED=1
+  

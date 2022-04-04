@@ -1,0 +1,21 @@
+
+        #home{
+            background: white;
+            width: 100%;
+            margin-bottom: 30px;
+
+            box-shadow: -1px -1px 43px -16px rgba(36,36,36,0.73);
+            -webkit-box-shadow: -1px -1px 43px -16px rgba(36,36,36,0.73);
+            -moz-box-shadow: -1px -1px 43px -16px rgba(36,36,36,0.73);
+        }
+
+        #home_inner{
+            max-width: 1000px;
+            padding: 20px;
+            margin: 0px auto;
+        }
+        #home a{
+            text-decoration: none;
+            color: black;
+            font-size: 28px;
+        }
