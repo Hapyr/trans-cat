@@ -1,5 +1,5 @@
 # Wellcome to TransCat!
-Categorize your bank transactions automatically by dessiontree classification!
+Categorize your bank transactions automatically according to the dessiontree classification!
 ## Get started
 The project is a simple Flask dockerized web application. So to start just run `docker-compose up`.
 The page is then accessible via 127.0.0.1:1234.
