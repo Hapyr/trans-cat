@@ -10,6 +10,8 @@ from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import cross_val_score
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 
 import chardet
 import json
@@ -265,20 +267,27 @@ def train_model_predict():
     X_train = X_all[0:len(df_x)]
     X_predict = X_all[len(df_x):]
     Y = output_transformer.fit_transform(df_y)
-
-    clf = DecisionTreeClassifier(random_state=0)
+    clf = LogisticRegression(random_state=0)
+    #clf = DecisionTreeClassifier(random_state=0)
+    #clf = RandomForestClassifier(max_depth=2, random_state=0)
 
     clf.fit(X_train,Y)
 
+
     y_pred = clf.predict(X_predict)
+    y_pred_prob = clf.predict_proba(X_predict)
     y_pred_str = output_transformer.inverse_transform(y_pred.reshape(-1, 1))
     y_pred_str = [e for ee in y_pred_str for e in ee]
-    print(y_pred_str)
+    # print(y_pred_prob)
+    # print( type(y_pred_prob) )
+
+    y_pred_prob_single = 120.0 * np.amax(y_pred_prob, axis=1)
 
     return render_template('train.html', data={
         "fet_vec": feture_vec,
         "lable_predict": y_pred_str,
         "lable_predict_single": [ e[0] for e in df_y],
+        "lable_probs": y_pred_prob_single,
         "data": load_csv(tmp_name),
         "train_model_name": form_model_name,
         "predict_model_name": uploaded_file.filename

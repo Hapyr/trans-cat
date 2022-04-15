@@ -38,9 +38,10 @@
         }
         .train_row{
             background: white;
-            display: block;
+            display: wrap !important;
             white-space: nowrap;
-            
+            grid-auto-flow: column;
+            grid-gap: 4px;
         }
         .train_row_header{
             background-color: white;
@@ -141,6 +142,11 @@
             border-radius: 5px;
 
         }
+        .kat_col{
+            position: sticky !important;
+            right: 0;
+            border-left: 4px solid white;
+        }
 
     </style>
 
@@ -168,6 +174,8 @@
 
                     <div class="grid-elem"><b>Selected model</b><br>{{ data['train_model_name'] }}</div>
                     <div class="grid-elem"><b>Data to predict</b><br>{{ data['predict_model_name'] }}</div>
+                    <div class="grid-elem" id="train_model" style="display: none;">{{ data['train_model_name'] }}</div>
+                    <div class="grid-elem" id="predict_model" style="display: none;">{{ data['predict_model_name'] }}</div>
 
                 </div>
 
@@ -188,7 +196,7 @@
                         {% for d in data['data'][0] %}
                             <div class="element" onclick="select_feture(this, '{{ d }}')">{{ d }}</div>
                         {% endfor %}
-                        <div class="element">Kategorie</div>
+                        <div class="element kat_col">Kategorie</div>
 
                     </div>
                     {% else %}
@@ -197,7 +205,7 @@
                         {% for k in d %}
                             <div class="element">{{ d[k] }}</div>
                         {% endfor %}
-                        <div class="element">    
+                        <div class="element kat_col" style="background-color: hsl({{ data['lable_probs'][outer_loop.index0] }}, 100%, 50%);">    
                             <select name="pred_kat" class="pred_kat" id="pred_kat_{{ outer_loop.index0 }}">
                                 {% for dd in data['lable_predict_single'] %}
                                 <option value="{{ dd }}" {% if dd == data['lable_predict'][outer_loop.index0] %} selected {% endif %} >{{ dd }}</option>
