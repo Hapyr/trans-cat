@@ -253,6 +253,7 @@ def train_model_predict():
     df_x = [ ' '.join(str(e) for e in st) for st in df_x ]
 
     df_y = pd.DataFrame(df, columns=['Kategorie']).values.tolist()
+    df_y_flat = list(dict.fromkeys( [subitem for item in df_y for subitem in item] ))
 
     df_x_predict = pd.DataFrame(df_pred, columns=feture_vec).values.tolist()
     df_x_predict = [ ' '.join(str(e) for e in st) for st in df_x_predict ]
@@ -283,10 +284,12 @@ def train_model_predict():
 
     y_pred_prob_single = 120.0 * np.amax(y_pred_prob, axis=1)
 
+
+
     return render_template('train.html', data={
         "fet_vec": feture_vec,
         "lable_predict": y_pred_str,
-        "lable_predict_single": [ e[0] for e in df_y],
+        "lable_predict_single": [ e for e in df_y_flat],
         "lable_probs": y_pred_prob_single,
         "data": load_csv(tmp_name),
         "train_model_name": form_model_name,
