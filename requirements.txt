@@ -4,3 +4,4 @@ numpy
 pandas
 sklearn
 chardet
+python-dotenv
