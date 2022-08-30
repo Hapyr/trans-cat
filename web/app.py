@@ -1,18 +1,5 @@
-from base64 import encode
 import numpy as np
 import pandas as pd
-from scipy.stats import uniform, randint
-
-from sklearn.datasets import load_breast_cancer, load_diabetes, load_wine
-from sklearn.metrics import auc, accuracy_score, confusion_matrix, mean_squared_error
-from sklearn.model_selection import cross_val_score, GridSearchCV, KFold, RandomizedSearchCV, train_test_split
-from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.model_selection import cross_val_score
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-
 import chardet
 import json
 import csv
@@ -22,19 +9,49 @@ import sys
 import re
 import base64
 import shutil
-from jinja2 import Template
 import codecs
-from io import StringIO
 import io
 
+from scipy.stats import uniform, randint
+from base64 import encode
+from sklearn.datasets import load_breast_cancer, load_diabetes, load_wine
+from sklearn.metrics import auc, accuracy_score, confusion_matrix, mean_squared_error
+from sklearn.model_selection import cross_val_score, GridSearchCV, KFold, RandomizedSearchCV, train_test_split
+from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import cross_val_score
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from pathlib import Path
+from dotenv import load_dotenv
+from jinja2 import Template
+from io import StringIO
 from flask import Flask, redirect, render_template, request, send_from_directory
+
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
+
 # Upload folder
-UPLOAD_FOLDER = '/code/files'
-DOWNLOAD_FOLDER = '/code/download'
+load_dotenv(Path.joinpath(Path.cwd(), ".env"))
+
+
+if os.environ.get("UPLOAD_FOLDER"):
+    UPLOAD_FOLDER =  Path.joinpath(Path.cwd(), os.environ.get("UPLOAD_FOLDER")) 
+else:
+    UPLOAD_FOLDER =  '/code/files'
+
+if os.environ.get("DOWNLOAD_FOLDER"):
+    DOWNLOAD_FOLDER =  Path.joinpath(Path.cwd(), os.environ.get("DOWNLOAD_FOLDER")) 
+else:
+    DOWNLOAD_FOLDER =  '/code/download'
+
+
+app.logger.debug(f"{UPLOAD_FOLDER=}")
+app.logger.debug(f"{DOWNLOAD_FOLDER=}")
+
 app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 app.config['DOWNLOAD_FOLDER'] =  DOWNLOAD_FOLDER
 
