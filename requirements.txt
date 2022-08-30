@@ -1,5 +1,4 @@
 flask
-MechanicalSoup
 numpy
 pandas
 sklearn

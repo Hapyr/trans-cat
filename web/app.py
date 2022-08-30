@@ -3,14 +3,9 @@ import pandas as pd
 import chardet
 import json
 import csv
-import math
 import os 
-import sys
-import re
-import base64
 import shutil
 import codecs
-import io
 
 from scipy.stats import uniform, randint
 from base64 import encode
@@ -114,7 +109,6 @@ def uploadFiles():
 
     uploaded_file = request.files['file']
     sep = request.form['seperator']
-    ending = request.form['ending']
     linestart = request.form['linestart']
 
     if uploaded_file.filename != '':
