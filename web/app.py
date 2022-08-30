@@ -36,8 +36,18 @@ app.config["DEBUG"] = True
 
 # Upload folder
 load_dotenv(Path.joinpath(Path.cwd(), ".env"))
-UPLOAD_FOLDER =  (Path.joinpath(Path.cwd(), os.environ.get("UPLOAD_FOLDER"))) or '/code/files'
-DOWNLOAD_FOLDER = (Path.joinpath(Path.cwd(), os.environ.get("DOWNLOAD_FOLDER"))) or '/code/download'
+
+
+if os.environ.get("UPLOAD_FOLDER"):
+    UPLOAD_FOLDER =  Path.joinpath(Path.cwd(), os.environ.get("UPLOAD_FOLDER")) 
+else:
+    UPLOAD_FOLDER =  '/code/files'
+
+if os.environ.get("DOWNLOAD_FOLDER"):
+    DOWNLOAD_FOLDER =  Path.joinpath(Path.cwd(), os.environ.get("DOWNLOAD_FOLDER")) 
+else:
+    DOWNLOAD_FOLDER =  '/code/download'
+
 
 app.logger.debug(f"{UPLOAD_FOLDER=}")
 app.logger.debug(f"{DOWNLOAD_FOLDER=}")
