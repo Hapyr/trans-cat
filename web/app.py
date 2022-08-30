@@ -185,7 +185,7 @@ def save_model_predict():
     df_all = pd.concat([df, df_pred])
     
     df_all.to_csv(train_model, sep=",", index=False)
-    df_pred.to_csv(predict_model_down, sep=",", index=False)
+    df_pred.to_csv(predict_model_down, sep=",", index=False, encoding='utf-8-sig')
 
     data = load_csv(predict_model_down)
 
