@@ -11,7 +11,7 @@ The application adds a "Category" column to the transaction list of your bank.
 When using the tool for the first time, you need to assign a category to each transaction itself. With this information, your later transaction lists will be automatically categorized. If there is an error in the categorization, you can change it. If new data is classified, it will be added to the model. 
 You can have several models for different banks.
 
-##You want to contribute?
+## You want to contribute?
 Feel free to integrate all your ideas. 
 I would like to develop an online version of this program, where one or more large models are created with data from different users. This would require hashing the sensitive data before uploading the CSV. 
 
