@@ -168,7 +168,7 @@
                 <div class="element kat_col">
                     <select name="pred_kat" class="pred_kat" id="pred_kat_{{ outer_loop.index0 }}">
                         {% for dd in data['lable_predict_single'] %}
-                        <option value="{{ dd }}" >{{ dd }}</option>
+                        <option value="{{ dd }}" {% if dd == data['lable_predict'][outer_loop.index0] %} selected {% endif %} >{{ dd }}</option>
                         {% endfor %}
                     </select>
                 </div>

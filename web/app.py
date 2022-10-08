@@ -138,10 +138,21 @@ def uploadFiles():
 
     asdd = pd.read_csv(tmp_name, sep=sep)
     asdd.drop(asdd.filter(regex="Unname"),axis=1, inplace=True)
+
+    if "Kategorie" in asdd:
+        df_y = pd.DataFrame(asdd, columns=['Kategorie']).values.tolist()
+        df_y_flat = list(dict.fromkeys( [subitem for item in df_y for subitem in item] ))
+        y_existing_str = asdd["Kategorie"]
+        asdd.drop(["Kategorie"], axis=1, inplace=True)
+    else:
+        df_y_flat = []
+        y_existing_str = []
+
     asdd.to_csv(tmp_name, index=False)
 
     return render_template('label.html', data={
-        "lable_predict_single": [],
+        "lable_predict": y_existing_str,
+        "lable_predict_single": [ e for e in df_y_flat],
         "data": load_csv(tmp_name)
     })
 
