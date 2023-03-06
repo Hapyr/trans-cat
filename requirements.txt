@@ -4,3 +4,5 @@ pandas
 sklearn
 chardet
 python-dotenv
+scipy
+scikit-learn
