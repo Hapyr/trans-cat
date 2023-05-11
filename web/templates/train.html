@@ -207,7 +207,7 @@
                         {% endfor %}
                         <div class="element kat_col" style="background-color: hsl({{ data['lable_probs'][outer_loop.index0] }}, 100%, 50%);">    
                             <select name="pred_kat" class="pred_kat" id="pred_kat_{{ outer_loop.index0 }}">
-                                {% for dd in data['lable_predict_single'] %}
+                                {% for dd in data['lable_predict_single']|sort %}
                                 <option value="{{ dd }}" {% if dd == data['lable_predict'][outer_loop.index0] %} selected {% endif %} >{{ dd }}</option>
                                 {% endfor %}
                             </select>
