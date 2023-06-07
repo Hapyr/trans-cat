@@ -1,7 +1,6 @@
 flask
 numpy
 pandas
-sklearn
 chardet
 python-dotenv
 scipy
